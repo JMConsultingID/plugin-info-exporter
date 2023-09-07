@@ -18,7 +18,7 @@ add_action('admin_menu', 'pie_add_admin_page');
 function pie_admin_page_callback() {
     echo '<div class="wrap">';
     echo '<h1>Plugin Info Exporter</h1>';
-    echo '<p>Click the button below to export plugin information to Excel:</p>';
+    echo '<p>Click the button below to export plugin information to JSON File:</p>';
     echo '<form method="post">';
     echo '<input type="submit" name="export_to_json" class="button button-primary" value="Export to JSON" />';
     echo '</form>';
@@ -29,9 +29,10 @@ function pie_admin_page_callback() {
     }
 }
 
-function pie_export_to_json() {    
+function pie_export_to_json() {   
+    ob_start(); // Mulai buffering output 
     require_once(ABSPATH . 'wp-admin/includes/plugin.php');
-    ob_start(); // Mulai buffering output
+
     $all_plugins = get_plugins();
     $active_plugins = get_option('active_plugins');
     $update_plugins = get_site_transient('update_plugins');
