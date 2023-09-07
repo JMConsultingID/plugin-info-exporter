@@ -20,12 +20,12 @@ function pie_admin_page_callback() {
     echo '<h1>Plugin Info Exporter</h1>';
     echo '<p>Click the button below to export plugin information to Excel:</p>';
     echo '<form method="post">';
-    echo '<input type="submit" name="export_to_json" class="button button-primary" value="Export to Excel" />';
+    echo '<input type="submit" name="export_to_json" class="button button-primary" value="Export to JSON" />';
     echo '</form>';
     echo '</div>';
 
     if(isset($_POST['export_to_json'])) {
-       pie_export_to_json();
+        pie_export_to_json();
     }
 }
 
@@ -38,21 +38,26 @@ function pie_export_to_json() {
     $plugins_data = [];
 
     foreach($all_plugins as $plugin_path => $plugin_data) {
-        $needs_update = (isset($update_plugins->response[$plugin_path])) ? 'Yes' : 'No';
-        $plugins_data[] = [
-            'Plugin Name' => $plugin_data['Name'],
+        $plugin_info = [
+            'Name' => $plugin_data['Name'],
             'Description' => strip_tags($plugin_data['Description']),
-            'Plugin Tag' => '', // You'll need to determine how to get "Plugin Tag"
+            'Tag' => '', // You'll need to determine how to get "Plugin Tag"
             'Author' => $plugin_data['Author'],
             'Plugin Link' => $plugin_data['PluginURI'],
             'Active Status' => in_array($plugin_path, $active_plugins) ? 'Active' : 'Inactive',
-            'Update Available' => $needs_update,
-            'Plugin Version' => $plugin_data['Version']
+            'Update Available' => (isset($update_plugins->response[$plugin_path])) ? 'Yes' : 'No',
+            'Version' => $plugin_data['Version']
         ];
+
+        $plugins_data[] = $plugin_info;
     }
 
+    $json_data = json_encode($plugins_data, JSON_PRETTY_PRINT);
+
     header('Content-Type: application/json');
-    echo json_encode($plugins_data);
+    header('Content-Disposition: attachment;filename="plugin-info-' . time() . '.json"');
+    header('Cache-Control: max-age=0');
+
+    echo $json_data;
     exit;
 }
-
