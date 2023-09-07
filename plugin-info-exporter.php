@@ -29,8 +29,9 @@ function pie_admin_page_callback() {
     }
 }
 
-function pie_export_to_json() {
+function pie_export_to_json() {    
     require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+    ob_start(); // Mulai buffering output
     $all_plugins = get_plugins();
     $active_plugins = get_option('active_plugins');
     $update_plugins = get_site_transient('update_plugins');
@@ -59,5 +60,6 @@ function pie_export_to_json() {
     header('Cache-Control: max-age=0');
 
     echo $json_data;
+    ob_end_clean(); // Hentikan buffering dan bersihkan output
     exit;
 }
