@@ -29,10 +29,10 @@ function pie_admin_page_callback() {
     }
 }
 
-function pie_export_to_json() {   
-    ob_start(); // Mulai buffering output 
-    require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+function pie_export_to_json() {
+    ob_start(); // Start buffering at the very beginning
 
+    require_once(ABSPATH . 'wp-admin/includes/plugin.php');
     $all_plugins = get_plugins();
     $active_plugins = get_option('active_plugins');
     $update_plugins = get_site_transient('update_plugins');
